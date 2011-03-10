@@ -4,22 +4,20 @@ package hammurabi
  * @author Mario Fusco
  */
 
-class Person(n: String, var pos: Int = 0, var color: String = "") {
+class Person(n: String) {
   val name = n
+  var pos: Int = _
+  var color: String = _
 
-  override def toString() = name + " is in pos " + pos + " with color " + color
-}
+  override def toString() = name + " is in pos " +
+          (if (pos == 0) "unknown" else pos) +
+          " with color " +
+          (if (color == null) "unknown" else color)
 
-abstract class ClassProvider[T] {
-  def toClass: Class[T]
-}
+  override def equals(obj: Any) = obj match {
+    case p: Person => p.name == name
+    case _ => false
+  }
 
-object PersonClassProvider extends ClassProvider[Person] {
-  def toClass: Class[Person] = classOf[Person]
-}
-
-object DSLHelper {
-  implicit val personClassProvider = PersonClassProvider
-
-  def of[T](implicit cp: ClassProvider[T]) = cp.toClass
+  override def hashCode = name.hashCode
 }
